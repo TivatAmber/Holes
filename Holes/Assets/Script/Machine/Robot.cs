@@ -60,6 +60,5 @@ public class Robot : Machine
                 other.GetComponent<Machine>().Turn();
             }
         }
-        
     }
 }

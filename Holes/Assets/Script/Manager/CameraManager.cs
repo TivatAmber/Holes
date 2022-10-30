@@ -26,8 +26,6 @@ public class CameraManager : MonoSingleton<CameraManager>
             {
                 scale = scaleMin;
             }
-            
-            
         }
         transform.localScale = new Vector3(scale, scale, scale);
         if (InputManager.Instance.Click)
@@ -36,7 +34,7 @@ public class CameraManager : MonoSingleton<CameraManager>
         }
         else
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, target.rotation, rotateSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 90 * InputManager.Instance.keyOrder.R, 0), rotateSpeed * Time.deltaTime);
         }
 
     }

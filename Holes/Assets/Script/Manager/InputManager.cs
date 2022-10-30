@@ -8,6 +8,7 @@ public struct KeyOrder
     public sbyte H;//ºáÖá
     public sbyte V;//×ÝÖá
     public sbyte C;//½»»¥
+    public sbyte R;//ÉãÏñ»úÐý×ª
     public sbyte LShift;
 }
 
@@ -17,11 +18,15 @@ public class InputManager : MonoSingleton<InputManager>
     public float MouseX;
     public float MouseY;
     public bool Click;
+    private float rotateTime;
+    public float rotateCD;
 
-    public Machine machine;
+    private Machine machine;
+    public RaycastHit raycastHit;
+    public LayerMask layerMask;
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.None;
     }
     
     private void FixedUpdate()
@@ -33,17 +38,56 @@ public class InputManager : MonoSingleton<InputManager>
     {
         MouseX = Input.GetAxis("Mouse X");
         MouseY = Input.GetAxis("Mouse Y");
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out raycastHit, 100, layerMask))
+            {
+                GameObject target = raycastHit.collider.gameObject;
+                if (target.CompareTag("Machine"))
+                {
+                    if (target.GetComponent<Machine>() != null)
+                    {
+                        if (target.GetComponent<Machine>().controlable == true)
+                        {
+                            if (machine != null) machine.controling = false;
+                            if (machine != null && machine.gameObject.GetComponent<Portal>() != null && target.GetComponent<Portal>() != null)
+                            {
+                                machine.gameObject.GetComponent<Portal>().BindingPortal(target);
+                                machine = null;
+                            }
+                            else
+                            {
+                                machine = target.GetComponent<Machine>();
+                                machine.controling = true;
+                            }
+                        }
+                        else
+                        {
+                            target.GetComponent<Machine>().Turn();
+                        }
+                    }
+                }
+                else
+                {
+                    if (machine != null)
+                    {
+                        machine.controling = false;
+                        machine = null;
+                    }
+                }
+            }
+        }
     }
-
-
     private void KeyCheck()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        /*if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (Cursor.lockState != CursorLockMode.None)
                 Cursor.lockState = CursorLockMode.None;
             else Cursor.lockState = CursorLockMode.Locked;
-        }
+        }*/
 
 
 
@@ -83,6 +127,23 @@ public class InputManager : MonoSingleton<InputManager>
         if (Input.GetKey(KeyCode.LeftShift))
         {
             keyOrder.LShift = 1;
+        }
+        if (rotateTime > rotateCD)
+        {
+            if (Input.GetKey(KeyCode.G))
+            {
+                keyOrder.R++;
+                rotateTime = 0.0f;
+            }
+            if (Input.GetKey(KeyCode.H))
+            {
+                keyOrder.R--;
+                rotateTime = 0.0f;
+            }
+        }
+        else
+        {
+            rotateTime += Time.deltaTime;
         }
     } 
 

@@ -12,34 +12,25 @@ public class Portal : Machine
         if (controling)
         {
             gameObject.transform.Rotate(0, rotateSpeed * Input.GetAxis("Mouse X"), 0);
-            //绑定传送门
-            Cursor.lockState = CursorLockMode.None;
-            if (Input.GetMouseButton(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out raycastHit, 100, layerMask))
-                {
-                    if (raycastHit.collider.gameObject.GetComponent<Portal>() != null)
-                    {
-                        anotherPortal = raycastHit.collider.gameObject.GetComponent<Portal>();
-                        
-                    }
-                }
-            }
-            
-
         }
         else
         {
             machineBody.velocity = Vector3.zero;
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (anotherPortal != null && other.CompareTag("Good"))
         {
             other.GetComponent<Good>().FlashTo(anotherPortal.transform);
         }
+    }
+    /// <summary>
+    /// 绑定传送门
+    /// </summary>
+    /// <param name="other">目标传送门</param>
+    public void BindingPortal(GameObject other)
+    {
+        anotherPortal = other.GetComponent<Machine>();
     }
 }

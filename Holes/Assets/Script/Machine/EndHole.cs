@@ -40,7 +40,7 @@ public class EndHole : Machine
             Destroy(other.gameObject);
             if (score >= scoreMax - 1) // 如果不-1那么即使收集到 scoreMax 也不会跳关
             {
-                GameObject.Find("Robot").transform.position = target.position;//到下一关
+                GameObject.Find("CameraTarget").transform.position = target.position;//到下一关
                 gameMenu.UpdateLevel();
                 score = -1;
             }

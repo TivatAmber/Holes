@@ -57,7 +57,6 @@ MonoBehaviour:
   controling: 0
   working: 0
   turnCD: 0
-  score: 0
   scoreMax: 10
   resetCD: 2
   target: {fileID: 0}
